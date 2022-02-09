@@ -8,19 +8,22 @@
         :desc="curViewData.type"
         :value="{ value: curViewData.value }"
         id="datas_json"
+        :jsonEditStyle="{ height: '70vh' }"
+        :jsonEditConfig="{ mode: 'tree' }"
         @edit="onDataEdit"
       />
     </n-drawer-content>
   </n-drawer>
+
+  <ReqSetting ref="reqSettingRef" :data="curViewData" @ok="onDataEdit" />
 </template>
 
 <script setup>
 import useDatas from '@/store/useDatas';
-import { Settings } from '@vicons/ionicons5';
 import { getDefaultStr } from '@/utils/helper';
 import PropsJsonEdit from '@/components/ContainerConfig/PropsJsonEdit/PropsJsonEdit.vue';
 import cloneDeep from 'lodash/cloneDeep'
-import { NSwitch, NInput, NInputNumber, NButton, NIcon } from 'naive-ui';
+import { NSwitch, NInput, NInputNumber, NTag } from 'naive-ui';
 import Action from './Action.vue';
 import ReqSetting from './ReqSetting.vue';
 
@@ -30,14 +33,13 @@ const tableData = computed(() => Object.keys(datas).map(name => ({ name, ...data
 
 const showViewData = ref(false);
 const curViewData = ref({});
-const showData = data => {
-  curViewData.value = cloneDeep(data);
-  showViewData.value = true;
-}
+
 const onDataEdit = ({ data }) => {
   setDataValue(curViewData.value.name, data.value);
   Object.assign(curViewData.value, data);
 }
+
+const reqSettingRef = ref(false);
 
 const columns = [
   {
@@ -78,15 +80,19 @@ const columns = [
           }),
         ]);
       } else if (row.type === "Request") {
-        // return h(NButton, {
-        //   size: "tiny",
-        //   type: "primary",
-        //   circle: true,
-        //   secondary: true,
-        // },
-        //   () => h(NIcon, null, () => h(Settings))
-        // );
-        return h(ReqSetting)
+        const { url = "", method, data } = row.value ?? {};
+        let _url = url + "";
+        if (_url && method == "GET") {
+          const param = Object.keys(data).map(key => `${key}=${data[key]}`).join("&");
+          _url += (url?.includes("?") ? "&" : param ? "?" : "") + param;
+        }
+        return h('div', {
+          class: "text-gray-500"
+        }, [
+          method && h(NTag, { type: 'primary', size: "small", class: "mr-2" },
+            () => h('span', null, method)),
+          _url,
+        ])
       }
       return valueStr;
     }
@@ -99,8 +105,16 @@ const columns = [
       return h(
         Action,
         {
+          type: row.type,
           onRm: () => rmDataByName(row.name),
-          onView: () => showData(row)
+          onView: () => {
+            curViewData.value = cloneDeep(row);
+            showViewData.value = true;
+          },
+          onSetReq: () => {
+            curViewData.value = cloneDeep(row);
+            reqSettingRef.value?.show();
+          }
         },
       )
     }

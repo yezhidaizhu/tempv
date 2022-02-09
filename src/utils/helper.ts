@@ -43,3 +43,11 @@ export const isObject = (val: any) => val !== null && typeof val === 'object';
 export const isBoolean = (val: any) => typeof val === 'boolean';
 export const isDate = (val: any) => val instanceof Date;
 
+// const a = {a:b:{c:1}}
+// getValueByStrPath(a,'a.b')  => {c:1}
+export function getObjValueByStrPath(data: { [prop: string]: any }, strPath: string) {
+  let _data = data ?? {};
+  const valuePathArr = strPath.split(".");
+  valuePathArr.map((path) => { _data = _data?.[path] });
+  return _data;
+}

@@ -15,16 +15,30 @@
       <Eye />
     </n-icon>
   </n-button>
+
+  <n-button
+    v-if="type === 'Request'"
+    size="tiny"
+    type="primary"
+    circle
+    secondary
+    @click="$emit('setReq')"
+  >
+    <n-icon>
+      <Settings />
+    </n-icon>
+  </n-button>
 </template>
 
 <script setup>
-import { Trash, Eye } from '@vicons/ionicons5';
+import { Trash, Eye, Settings } from '@vicons/ionicons5';
 
-const props = defineProps({
-
+defineProps({
+  type: {
+    type: String,
+  }
 });
-const emits = defineEmits(['rm', 'view']);
-
+const emits = defineEmits(['rm', 'view', 'setReq']);
 
 
 </script>

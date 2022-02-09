@@ -17,7 +17,13 @@
       </div>
     </div>
 
-    <div v-show="showEdit" ref="jsonEditRef" id="containerConfig_jsoneditor" class="w-full"></div>
+    <div
+      v-show="showEdit"
+      ref="jsonEditRef"
+      id="containerConfig_jsoneditor"
+      :style="jsonEditStyle"
+      class="w-full"
+    ></div>
 
     <n-card v-show="!showEdit">
       <n-code :code="JSON.stringify(value, null, 2)" language="typescript" />
@@ -46,6 +52,14 @@ const props = defineProps({
   id: {
     type: String,
     default: "containerConfig_jsoneditor"
+  },
+  jsonEditStyle: {
+    type: Object,
+    default: {}
+  },
+  jsonEditConfig: {
+    type: Object,
+    default: {},
   }
 });
 const emits = defineEmits(['edit']);
@@ -63,6 +77,7 @@ const creatJsonEditor = () => {
         modes: ['code', 'tree', 'view'],
         enableSort: false,
         enableTransform: false,
+        ...props.jsonEditConfig,
       }
       editor.value = new JSONEditor(container, options);
     }
