@@ -46,7 +46,6 @@ export default {
 <script lang="ts" setup >
 import { Splitpanes, Pane } from '@/components/splitpanes/index';
 import Btn from '@/components/Btn.vue';
-import containers from '@/plugin/container/index'
 import Container from './Container.vue';
 
 const props = defineProps({

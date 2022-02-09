@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen flexCCenter">
     <Btn @click="$emit('add')">
-      <span class="text-3xl">ADD Area</span>
+      <span class="text-3xl">new Area</span>
     </Btn>
   </div>
 </template>

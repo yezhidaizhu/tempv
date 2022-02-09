@@ -42,6 +42,7 @@
 
 <script setup>
 import { Add, Remove } from '@vicons/ionicons5';
+import { getDefaultStr, getPropsTypeStr } from '@/utils/helper';
 
 const props = defineProps({
   compProps: {
@@ -80,25 +81,7 @@ const onAddProp = prop => {
 
 const onRmProp = prop => emits('rmProp', prop.name);
 
-function getPropsTypeStr(type) {
-  const typeStr = type + ""
-  if (typeof type === typeof Array) {
-    return typeStr.slice(9, typeStr.split("").findIndex(x => x == '('))
-  } else if (({}).toString.call([]) == ({}).toString.call(type)) {
-    return '[ ' + type.map(t => getPropsTypeStr(t)).join(", ") + ' ]';
-  }
-  return typeStr
-}
 
-function getDefaultStr(prop) {
-  const { type, default: defaultValue } = prop;
-  const typeStr = type + ""
 
-  if (typeStr.slice(9, typeStr.split("").findIndex(x => x == '(')) === 'Object' && typeof defaultValue == 'function') {
-    return JSON.stringify(defaultValue())
-  }
-
-  return defaultValue ?? JSON.stringify(defaultValue);
-}
 
 </script>

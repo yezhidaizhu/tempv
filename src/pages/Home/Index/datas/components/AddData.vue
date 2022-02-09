@@ -47,7 +47,10 @@ const rules = {
   type: [{ required: true, message: '请选择类型' }],
 }
 
-const options = baseType.map(type => ({ label: type, value: type }))
+const options = [
+  ...baseType.map(type => ({ label: type, value: type })),
+  { label: "请求", value: "Request" }
+]
 
 const onOk = () => {
   formRef.value.validate((errors) => {

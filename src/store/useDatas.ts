@@ -1,14 +1,15 @@
 import { defineStore } from "pinia";
 import { uid } from "uid";
 
+// 现在仅支持的数据形式
 export const baseType = ['String', 'Number', 'Boolean', 'Array', 'Object'];
 
 // 数据池
 export default defineStore('datas', {
   state: (): {
-    datas: Array<Data>
+    datas: { [x: string]: any }
   } => ({
-    datas: [],
+    datas: {}, // 存储的数据
   }),
   actions: {
     addData(val: { type: string, name: string }) {
@@ -16,20 +17,19 @@ export default defineStore('datas', {
       //@ts-ignore
       const value = baseType.includes(type) ? window[type]?.() : "";
       const data: Data = {
-        key: uid(5),
         type,
-        name,
-        value: "",
+        value: value,
       }
-      this.datas.push(data)
+
+      this.datas[name] = data;
     },
-    rmDataByIndex(index: number) {
-      this.datas.splice(index, 1)
+    rmDataByName(name: string) {
+      delete this.datas[name];
     },
-    rmDataByKey(key: string) {
-      const index = this.datas.findIndex(d => d.key === key);
-      if (index != -1) this.rmDataByIndex(index);
-    },
+    setDataValue(name: string, value: any) {
+      if (!name || !this.datas[name]) return;
+      this.datas[name].value = value;
+    }
   },
   persist: true,
 });
@@ -37,9 +37,6 @@ export default defineStore('datas', {
 
 
 type Data = {
-  key: string,
   type: string,
-  name: string,
-  value?: any,
+  value: any,
 }
-
